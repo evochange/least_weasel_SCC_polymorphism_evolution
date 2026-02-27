@@ -3,7 +3,7 @@ This repository contains custom code and scripts used to study the origin and ev
 
 All code was used for the analyses of the following **research paper**:
 
-Miranda I, et al. (2026). *Balanced polymorphism underlies adaptation for seasonal camouflage in the least weasel*. **Communications Biology**.
+Miranda I, et al. (2026). *Balanced polymorphism underlies adaptation for seasonal camouflage in the least weasel*.
 
 Further details on the context of the code and files are provided in the original manuscript.
 
