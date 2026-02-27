@@ -1,0 +1,126 @@
+//SLiM Models M. nivalis
+//ANC13 demographic model -- Capture data
+//Neutral model, f(brown) at 30%
+//Without burn-in period for neutral demography
+//With 5x parameter rescaling 
+
+
+//Start simulation
+//Define basic parameters
+initialize() {
+	defineConstant("S", 5);                        // Rescaling factor
+	initializeMutationRate(0*S);
+	initializeMutationType("m2", 1, "f", 0.0*S);   //mc1r mutation; neutral mutation
+	m2.convertToSubstitution = F;	
+	initializeGenomicElementType("g1", m2, 1.0);
+	initializeGenomicElement(g1, 0, 39999);
+	initializeRecombinationRate(0*S);
+}
+
+//Define Ancestral population
+1 early() { 
+	sim.addSubpop("p1", asInteger(693107/S));      //population size/S for rescaling
+	}
+
+//Add MC1R mutation to ancestral population:
+1 late() {
+	target = sample(p1.genomes, asInteger(round(693107*2/S*0.1633)));  //population size/S for rescaling
+	target.addNewDrawnMutation (m2, 20000);
+
+	//Check that mutation was correctly included in the population:
+	mutp0 = p1.genomes.countOfMutationsOfType(m2);
+	totalp0 = sum (mutp0);
+	meanp0 = mean (mutp0);
+	cat("Nr of mutation occurences before pop split:\t" + totalp0 + "\n");
+	cat("Frequency of mutation occurences before pop split:\t" + meanp0 + "\n");
+	
+	//stop simulation if candidate mutation is not present in the population
+	if (totalp0 == 0)
+		sim.simulationFinished();
+	}
+
+//add a POP SPLIT (generate Central (p2) from Ancestral/North (p1))
+//this happens (1007480.704 generations)*(1 year) = 1,007,481 yr ago
+//thus, simulation should end at 1 + 1,007,480.704 = 1,007,482 generations
+//also RESIZE North (p1) and add MIGRATION
+2 early() {
+	sim.addSubpopSplit("p2", asInteger(round(6931.073/S)), p1); //population size/S for rescaling
+	p1.setSubpopulationSize(asInteger(round(1838146.13/S)));    //population size/S for rescaling
+	p1.setMigrationRates(c(p2), c(3.19e-7));   // migration rate from p2 to p1             
+	p2.setMigrationRates(c(p1), c(1.77e-6));   // migration rate from p1 to p2
+	}
+
+//define POP GROWTH in North and Central
+// Where N(0) is the base subpopulation size and t = gen - 2:
+// N(North) should be int(round(N(0) * (1 - 0.00000159677)^t)), i.e., growth is r=-1.59677e-6 per generation
+// N(Central) should be int(round(N(0) * (1 + 0.00000563597)^t)), i.e., growth is r=5.63597e-6 per generation
+
+2:201497 early() {                                                //time/S for rescaling
+	t = sim.cycle - 2;
+	p1_size = round((1838146.13/S) * (1 - (0.00000159677002*S))^t);  //growth rate*S for rescaling; population size/S for rescaling
+	p2_size = round((6931.073/S) * (1 + (0.0000056359744880*S))^t);    //growth rate*S for rescaling; population size/S for rescaling
+	
+	p1.setSubpopulationSize(asInteger(p1_size));
+	p2.setSubpopulationSize(asInteger(p2_size));
+	}
+
+
+// OUTPUT AND TERMINATE
+// Generation 1,007,482 is the present, i.e., 1 initialize + 1,007,481 evolution
+201497 late() {                                                   //time/S for rescaling
+
+	//count occurences of target mut in P1:
+	mutp1 = p1.genomes.countOfMutationsOfType(m2);
+	totalp1 = sum (mutp1);
+	meanp1 = mean (mutp1);
+	cat("\n" + "Nr of mutation occurences in P1 (end of sim):\t" + totalp1 + "\n");
+	cat("Frequency of mutation occurences in P1 (end of sim):\t" + meanp1 + "\n");
+	
+	//count occurences of target mut in P2:
+	mutp2 = p2.genomes.countOfMutationsOfType(m2);
+	totalp2 = sum (mutp2);
+	meanp2 = mean (mutp2);
+	cat("\n" + "Nr of mutation occurences in P2 (end of sim):\t" + totalp2 + "\n");
+	cat("Frequency of mutation occurences in P2 (end of sim):\t" + meanp2 + "\n");
+	
+	//counts of genotypes in P1
+	//tag P1 individuals with count of m2 mutations
+	p1_inds = p1.individuals;
+	p1_inds.tag = p1_inds.countOfMutationsOfType(m2);
+	
+		// count homozygous Ancestral
+		indP1_homoA = (p1.individuals.tag == 0) ;
+		countP1_homoA = sum (indP1_homoA);
+		cat("\n" +  "Nr of homozygous ancestral in P1 (end of sim):\t" + countP1_homoA + "\n");
+		
+		// count heterozygous 
+		indP1_hetero = (p1.individuals.tag == 1) ;
+		countP1_hetero = sum (indP1_hetero);
+		cat("Nr of heterozygous in P1 (end of sim):\t" + countP1_hetero + "\n");
+		
+		// count homozygous Derived 
+		indP1_homoD = (p1.individuals.tag == 2) ;
+		countP1_homoD = sum (indP1_homoD);
+		cat("Nr of homozygous derived in P1 (end of sim):\t" + countP1_homoD + "\n");
+	
+	//counts of genotypes in P2
+	//tag P2 individuals with count of m2 mutations
+	p2_inds = p2.individuals;
+	p2_inds.tag = p2_inds.countOfMutationsOfType(m2);
+	
+		// count homozygous Ancestral
+		indP2_homoA = (p2.individuals.tag == 0) ;
+		countP2_homoA = sum (indP2_homoA);
+		cat("\n" +  "Nr of homozygous ancestral in P2 (end of sim):\t" + countP2_homoA + "\n");
+		
+		// count heterozygous 
+		indP2_hetero = (p2.individuals.tag == 1) ;
+		countP2_hetero = sum (indP2_hetero);
+		cat("Nr of heterozygous in P2 (end of sim):\t" + countP2_hetero + "\n");
+		
+		// count homozygous Derived 
+		indP2_homoD = (p2.individuals.tag == 2) ;
+		countP2_homoD = sum (indP2_homoD);
+		cat("Nr of homozygous derived in P2 (end of sim):\t" + countP2_homoD + "\n");
+		
+	}
