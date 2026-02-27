@@ -1,4 +1,4 @@
-# Evolution of seasonal colour polymorphism in the least weasel 
+# Evolution of seasonal color polymorphism in the least weasel 
 This repository contains custom code and scripts used to study the origin and evolution of seasonal coat color polymorphism in the least weasel (*Mustela nivalis*).
 
 All code was used for the analyses of the following **research paper**:
