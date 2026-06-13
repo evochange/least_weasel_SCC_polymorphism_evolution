@@ -1,17 +1,21 @@
 # Evolution of seasonal color polymorphism in the least weasel 
 This repository contains custom code and scripts used to study the origin and evolution of seasonal coat color polymorphism in the least weasel (*Mustela nivalis*). Provided files refer to analyses of phenotypic data from museum skins and targeted-capture genomic data.
 
+---
+
 All code was used for the analyses of the following **research paper**:
 
-Miranda I, et al. (2026). *Balanced polymorphism underlies adaptation for seasonal camouflage in the least weasel*. **Communications Biology** (in press).
+Miranda I, et al. (2026). *Balanced polymorphism underlies adaptation for seasonal camouflage in the least weasel*. **Communications Biology** 9:769. https://doi.org/10.1038/s42003-026-09937-9.
 
 Further details on the context of the code and files are provided in the original manuscript.
 
 Input files to run these scripts and further details on their usage are provided in an associated **Figshare** repository:
 
-Miranda I, et al. (2026). *Data from "Balanced polymorphism underlies long-standing adaptation for seasonal camouflage in the least weasel"*. **figshare**. Dataset. https://doi.org/10.6084/m9.figshare.28124177
+Miranda I, et al. (2026). *Data from "Balanced polymorphism underlies long-standing adaptation for seasonal camouflage in the least weasel"*. **figshare**. Dataset. https://doi.org/10.6084/m9.figshare.28124177.
 
 **Contact:** inesmiranda (at) cibio.up.pt
+
+---
 
 ### Phenotypic data analysis
 1. [Analysis of phenotypic data from museum skins](https://github.com/evochange/least_weasel_SCC_polymorphism_evolution/tree/main/01_Phenotyping-museum-skins)
